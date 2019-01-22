@@ -1,0 +1,64 @@
+<ion-content [ngClass]="{'background-black': !sharedProvider.isCameraOn}">
+  <div class="overlay-app" *ngIf="setupVideo">
+    <div class="overlay-text">Lading Video... <ion-spinner></ion-spinner></div>
+  </div>
+  <div class="buttons-row" dir="rtl" *ngIf="!sharedProvider.isCameraOn && !isDrawing">
+
+    <div class="my-btn circle-btn" [ngClass]="{'disallow-draw': !allowDraw}" [style.background]="color" role="button" [ngClass]="{'allow-draw': allowDraw}">
+      <div class="brush-box" (click)="toggleAllowDraw()">
+        <ion-icon name="brush" ></ion-icon>
+      </div>
+      <color-picker *ngIf="allowDraw && !isDrawing"  [hexColor]="color" (colorChanged)="setPadColor($event)"></color-picker>
+    </div>
+
+    <div class="my-btn" (click)="undo()" role="button" *ngIf="drawsData.length > 1">
+      <ion-icon name="ios-undo" ></ion-icon>
+    </div>
+  </div>
+
+  <signature-pad #signaturePad *ngIf="!sharedProvider.isCameraOn" [options]="signaturePadOptions" (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()"></signature-pad>
+
+  <div class="image-preview-container" [ngClass]="{'show' : !sharedProvider.isCameraOn}">
+    <img [src]="previewFile" *ngIf="mediaType == 'image'">
+
+    <video #previewVideo loop width="100%" height="100%" (loadeddata)="videoDataLoaded()" poster="data:image/gif,AAAA" *ngIf="mediaType == 'video' && videoHasData" [ngClass]="{'front-camera' : cameraDirection == 'front'}">
+      <source [src]="previewFile" type="video/mp4">
+    </video>
+  </div>
+
+  <button type="button" class="flash-mode-btn" *ngIf="sharedProvider.isCameraOn && !recordingVideo"
+          [ngClass]="{'flash-off': flashMode == 'off'}"
+          (click)="changeFlashMode()">
+    <ion-icon name="ios-flash"></ion-icon>
+  </button>
+
+  <button type="button" class="switch-camera-btn switch-camera-btn-animate-pause" *ngIf="sharedProvider.isCameraOn && !recordingVideo"
+          [ngClass]="{'switch-camera-btn-animate-play': switchCameraOn}"
+          (click)="switchCamera()">
+    <ion-icon name="ios-swap"></ion-icon>
+  </button>
+
+  <ng-container *ngIf="!setupVideo">
+    <svg class="timer-svg" *ngIf="recordingVideo && recordTimer < 16">
+      <circle r="53" cx="60" cy="60"></circle>
+    </svg>
+
+    <div class="take-pic-btn-background" [ngClass]="{'record-video' : recordingVideo}" *ngIf="sharedProvider.isCameraOn && !isDrawing">
+      <div class="record-timer" *ngIf="recordingVideo">{{recordTimer}}</div>
+    </div>
+    <button type="button"  class="take-pic-btn" [ngClass]="{'record-video' : recordingVideo}" (click)="takeMedia()" *ngIf="sharedProvider.isCameraOn && !isDrawing">
+      <div class="start-record-icon" [ngClass]="{'show' : mediaType == 'video'}" *ngIf="!recordingVideo"></div>
+      <div class="stop-record-icon" *ngIf="recordingVideo"></div>
+    </button>
+
+    <ng-container *ngIf="sharedProvider.isCameraOn && !recordingVideo">
+      <div class="media-type-slider" [ngClass]="{'video-type' : mediaType == 'video'}" dir="rtl">
+        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'image'}" (click)="setMediaType('image')">תמונה</button>
+        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'video'}" (click)="setMediaType('video')">סרטון</button>
+      </div>
+      <div class="select-media-type-triangle"></div>
+    </ng-container>
+  </ng-container>
+
+
+</ion-content>

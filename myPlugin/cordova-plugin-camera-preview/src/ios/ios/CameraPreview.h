@@ -4,6 +4,8 @@
 
 #import "CameraSessionManager.h"
 #import "CameraRenderController.h"
+#import <AVKit/AVKit.h>
+#define VideoFileExtension @".MOV"
 
 @interface CameraPreview : CDVPlugin <TakePictureDelegate, FocusDelegate>
 
@@ -47,5 +49,10 @@
 @property (nonatomic) CameraSessionManager *sessionManager;
 @property (nonatomic) CameraRenderController *cameraRenderController;
 @property (nonatomic) NSString *onPictureTakenHandlerId;
+@property (nonatomic, retain) UIView *parentView;
+@property NSString *outputPath;
+@property AVCaptureMovieFileOutput *output;
+@property AVCaptureSession *session;
+@property AVCaptureVideoPreviewLayer *previewLayer;
 
 @end

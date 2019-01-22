@@ -2,9 +2,13 @@
 #import <Cordova/CDVPlugin.h>
 #import <Cordova/CDVInvokedUrlCommand.h>
 
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 #import "CameraPreview.h"
 
 @implementation CameraPreview
+
+@synthesize parentView, outputPath, output, session, previewLayer;
 
 -(void) pluginInitialize{
   // start as transparent
@@ -13,7 +17,6 @@
 }
 
 - (void) startCamera:(CDVInvokedUrlCommand*)command {
-
   CDVPluginResult *pluginResult;
 
   if (self.sessionManager != nil) {
@@ -33,7 +36,6 @@
     BOOL toBack = (BOOL)[command.arguments[7] boolValue];
     CGFloat alpha = (CGFloat)[command.arguments[8] floatValue];
     BOOL tapToFocus = (BOOL) [command.arguments[9] boolValue];
-    BOOL disableExifHeaderStripping = (BOOL) [command.arguments[10] boolValue]; // ignore Android only
 
     // Create the session manager
     self.sessionManager = [[CameraSessionManager alloc] init];
@@ -79,26 +81,26 @@
 }
 
 - (void) stopCamera:(CDVInvokedUrlCommand*)command {
-    
+
     NSLog(@"stopCamera");
-    
+
     [self.cameraRenderController.view removeFromSuperview];
     [self.cameraRenderController removeFromParentViewController];
     self.cameraRenderController = nil;
-    
+
     [self.commandDelegate runInBackground:^{
-        
+
         CDVPluginResult *pluginResult;
         if(self.sessionManager != nil) {
-            
+
             for(AVCaptureInput *input in self.sessionManager.session.inputs) {
                 [self.sessionManager.session removeInput:input];
             }
-            
+
             for(AVCaptureOutput *output in self.sessionManager.session.outputs) {
                 [self.sessionManager.session removeOutput:output];
             }
-            
+
             [self.sessionManager.session stopRunning];
             self.sessionManager = nil;
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -106,7 +108,7 @@
         else {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Camera not started"];
         }
-        
+
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
@@ -463,6 +465,165 @@
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Camera not started"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
   }
+}
+
+- (void) startRecordVideo:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        NSLog(@"startRecordVideo");
+        //stop the device from being able to sleep
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+
+//        NSString *camera = command.arguments[0];
+        CDVPluginResult *pluginResult;
+
+        // make output device
+        outputPath = [self getFileName];
+        NSURL *fileURI = [[NSURL alloc] initFileURLWithPath:outputPath];
+//        [self.sessionManager.videoFileOutput startRecordingToOutputFileURL:fileURI recordingDelegate:self];
+//
+//        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"start recording"];
+//        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+//
+
+
+        if (self.sessionManager != nil) {
+            [self.sessionManager startRecordVideo:fileURI];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"start recording"];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Session not started"];
+        }
+
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+//        CMTime maxDuration = CMTimeMakeWithSeconds(1800, 1);
+//        output = [[AVCaptureMovieFileOutput alloc]init];
+//        output.maxRecordedDuration = maxDuration;
+//        output.movieFragmentInterval = kCMTimeInvalid;
+//
+//        if ([captureSession canAddOutput:output]) {
+//         [captureSession addOutput:output];
+//        } else {
+//            NSLog(@"canAddOutput error");
+//        }
+//
+//        AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+//        AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
+//
+//        if ([captureSession canAddInput:audioInput])
+//            [captureSession addInput:audioInput];
+//
+//        NSError *error;
+//        AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:&error];
+//        if ([captureSession canAddInput:deviceInput]) {
+//         [captureSession addInput:deviceInput];
+//        } else {
+//            NSLog(@"deviceInput: %@", error);
+//        }
+//
+//        [captureSession startRunning];
+//        [output startRecordingToOutputFileURL:fileURI recordingDelegate:self];
+//
+//        //return true to ensure callback fires
+//        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+//        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)stopRecordVideo:(CDVInvokedUrlCommand *)command
+{
+//    [output stopRecording];
+//    self.cameraRenderController.view.alpha = 0;
+//
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    CDVPluginResult *pluginResult;
+//
+//    if ([fileManager fileExistsAtPath:outputPath]){
+//        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
+//    } else {
+//        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: @"not found"];
+//    }
+//
+//    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
+//    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+    CDVPluginResult *pluginResult;
+
+    if (self.sessionManager != nil) {
+        [self.commandDelegate runInBackground:^{
+            [self.sessionManager stopRecordVideo];
+        }];
+
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Session not started"];
+    }
+    
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(NSString*)getFileName
+{
+    int fileNameIncrementer = 1;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *libPath = [self getCachePath];
+    NSString *token = @"tmpVideo";
+
+    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@%@", libPath, token, VideoFileExtension];
+
+    while ([fileManager fileExistsAtPath:tempPath]) {
+        tempPath = [NSString stringWithFormat:@"%@%@_%i%@", libPath, token, fileNameIncrementer, VideoFileExtension];
+        fileNameIncrementer++;
+    }
+
+    return tempPath;
+}
+
+-(NSString*)getLibraryPath
+{
+    NSArray *lib = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *library = [lib objectAtIndex:0];
+    return [NSString stringWithFormat:@"%@/NoCloud/", library];
+}
+
+-(NSString*)getCachePath
+{
+    NSString* cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    return [NSString stringWithFormat:@"%@/", cachePath];
+}
+
+-(AVCaptureDevice *)getCamera: (NSString *)camera
+{
+    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevice *captureDevice = nil;
+    for (AVCaptureDevice *device in videoDevices)
+    {
+        if([camera caseInsensitiveCompare:@"front"] == NSOrderedSame)
+        {
+            if (device.position == AVCaptureDevicePositionFront )
+            {
+                captureDevice = device;
+                break;
+            }
+        }
+        else if ([camera caseInsensitiveCompare:@"BACK"] == NSOrderedSame)
+        {
+            if (device.position == AVCaptureDevicePositionBack )
+            {
+                captureDevice = device;
+                break;
+            }
+        }
+        else
+        {
+            //TODO: return cordova error
+            NSLog(@"Coudn't find camera");
+        }
+    }
+    return captureDevice;
+}
+
+- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
+    NSLog(@"captureOutput function: %@", error);
 }
 
 -(void) setColorEffect:(CDVInvokedUrlCommand*)command {

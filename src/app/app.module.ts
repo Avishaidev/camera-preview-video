@@ -3,28 +3,39 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { File } from '@ionic-native/file';
+import { SignaturePadModule } from 'angular2-signaturepad';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { ShareProvider } from '../providers/share/share';
+import {ComponentsModule} from "../components/components.module";
+import {CommonModule} from "@angular/common";
+import {CameraPreview} from "../../myPlugin/ionic-native_camera-preview/index";
+import { FileTransfer} from '@ionic-native/file-transfer';
 
 @NgModule({
   declarations: [
-    MyApp,
-    HomePage
+    MyApp
   ],
   imports: [
     BrowserModule,
+    ComponentsModule,
+    CommonModule,
+    SignaturePadModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    HomePage
+    MyApp
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    File,
+    CameraPreview,
+    FileTransfer,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ShareProvider
   ]
 })
 export class AppModule {}
