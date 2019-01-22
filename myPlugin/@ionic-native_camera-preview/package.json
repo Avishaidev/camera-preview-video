@@ -1,0 +1,51 @@
+{
+  "_from": "@ionic-native/camera-preview",
+  "_id": "@ionic-native/camera-preview@4.17.0",
+  "_inBundle": false,
+  "_integrity": "sha512-0b38kl3hQIzr33Q8xn0yoLRrqTeuMkbIXs3R+b4Xm/lOorMLeu17vl+QnkUQhZu73z0mf56/ExpFoQvaDsmryg==",
+  "_location": "/@ionic-native/camera-preview",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@ionic-native/camera-preview",
+    "name": "@ionic-native/camera-preview",
+    "escapedName": "@ionic-native%2fcamera-preview",
+    "scope": "@ionic-native",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@ionic-native/camera-preview/-/camera-preview-4.17.0.tgz",
+  "_shasum": "7f04c4501c5885641762dc93daadc4c88151c3d4",
+  "_spec": "@ionic-native/camera-preview",
+  "_where": "C:\\testApps\\cameraPreview",
+  "author": {
+    "name": "ionic"
+  },
+  "bugs": {
+    "url": "https://github.com/ionic-team/ionic-native/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Ionic Native - Native plugins for ionic apps",
+  "homepage": "https://github.com/ionic-team/ionic-native#readme",
+  "license": "MIT",
+  "module": "index.js",
+  "name": "@ionic-native/camera-preview",
+  "peerDependencies": {
+    "@ionic-native/core": "^4.11.0",
+    "@angular/core": "*",
+    "rxjs": "^5.5.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ionic-team/ionic-native.git"
+  },
+  "typings": "index.d.ts",
+  "version": "4.17.0"
+}
