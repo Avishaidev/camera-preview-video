@@ -1,6 +1,6 @@
 <ion-content [ngClass]="{'background-black': !sharedProvider.isCameraOn}">
   <div class="overlay-app" *ngIf="setupVideo">
-    <div class="overlay-text">Lading Video... <ion-spinner></ion-spinner></div>
+    <div class="overlay-text">Loading Video... <ion-spinner></ion-spinner></div>
   </div>
   <div class="buttons-row" dir="rtl" *ngIf="!sharedProvider.isCameraOn && !isDrawing">
 
@@ -53,8 +53,8 @@
 
     <ng-container *ngIf="sharedProvider.isCameraOn && !recordingVideo">
       <div class="media-type-slider" [ngClass]="{'video-type' : mediaType == 'video'}" dir="rtl">
-        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'image'}" (click)="setMediaType('image')">תמונה</button>
-        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'video'}" (click)="setMediaType('video')">סרטון</button>
+        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'image'}" (click)="setMediaType('image')">Image</button>
+        <button ion-button type="button" clear class="media-type-btn" [ngClass]="{'active' : mediaType == 'video'}" (click)="setMediaType('video')">Video</button>
       </div>
       <div class="select-media-type-triangle"></div>
     </ng-container>
