@@ -613,38 +613,44 @@ public class CameraActivity extends Fragment {
       mRecorder.setCamera(mCamera);
 
       CamcorderProfile profile;
-      if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_480P)) {
-        profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_480P);
+      if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_HIGH)) {
+        profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_HIGH);
       } else {
-        if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_720P)) {
-          profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_720P);
+        if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_480P)) {
+          profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_480P);
         } else {
-          if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_1080P)) {
-            profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_1080P);
+          if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_720P)) {
+            profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_720P);
           } else {
-            profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_LOW);
+            if (CamcorderProfile.hasProfile(defaultCameraId, CamcorderProfile.QUALITY_1080P)) {
+              profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_1080P);
+            } else {
+              profile = CamcorderProfile.get(defaultCameraId, CamcorderProfile.QUALITY_LOW);
+            }
           }
         }
       }
 
-      mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+
+      mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
       mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-      mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//      mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
-      Camera.Size size = getOptimalPictureSize(width, height, cameraParams.getPreviewSize(), cameraParams.getSupportedPictureSizes());
-      videoWidth = size.width;
-      videoHeight = size.height;
+      mRecorder.setProfile(profile);
+//      Camera.Size size = getOptimalPictureSize(width, height, cameraParams.getPreviewSize(), cameraParams.getSupportedPictureSizes());
+//      videoWidth = size.width;
+//      videoHeight = size.height;
 
 
-      mRecorder.setVideoFrameRate(profile.videoFrameRate);
-      mRecorder.setVideoSize(videoWidth, videoHeight);
-      mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
-      mRecorder.setAudioEncodingBitRate(profile.audioBitRate);
-      mRecorder.setAudioChannels(profile.audioChannels);
-      mRecorder.setAudioSamplingRate(profile.audioSampleRate);
+//      mRecorder.setVideoFrameRate(profile.videoFrameRate);
+//      mRecorder.setVideoSize(videoWidth, videoHeight);
+//      mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
+//      mRecorder.setAudioEncodingBitRate(profile.audioBitRate);
+//      mRecorder.setAudioChannels(profile.audioChannels);
+//      mRecorder.setAudioSamplingRate(profile.audioSampleRate);
 
-      mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-      mRecorder.setAudioEncoder(profile.audioCodec);
+//      mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//      mRecorder.setAudioEncoder(profile.audioCodec);
       mRecorder.setOutputFile(filePath);
       mRecorder.setOrientationHint(mOrientationHint);
 
